@@ -17,40 +17,54 @@ import {
   Paper,
 } from "@mui/material";
 import { Delete, Edit, Search } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  deleteJob,
-  fetchJobs,
-  setFilters,
-  setSelectedJob,
-} from "../redux/jobSlice";
+import { deleteJob, fetchJobs, setFilters, setSelectedJob } from "../redux/jobSlice";
 import { useNavigate } from "react-router-dom";
+
+// Utility hook for debounce
+function useDebounce(value, delay = 500) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(timer); // Cleanup on unmount or value change
+  }, [value, delay]);
+
+  return debouncedValue;
+}
 
 export default function JobListPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  // Redux state
   const { jobs, loading, filters } = useSelector((state) => state.job);
-  const [searchText, setSearchText] = useState(filters.search);
-  const [sortOrder, setSortOrder] = useState(filters.sort);
-  const [department, setDepartment] = useState(filters.department);
 
+  // Local filters state
+  const [searchText, setSearchText] = useState(filters.search || "");
+  const [sortOrder, setSortOrder] = useState(filters.sort || "newest");
+  const [department, setDepartment] = useState(filters.department || "");
+
+  // Debounced search input value
+  const debouncedSearchText = useDebounce(searchText, 500); // Adjust debounce time if needed
+
+  // Fetch jobs when filters change
   useEffect(() => {
-    dispatch(fetchJobs(filters));
-  }, [dispatch, filters]);
+    dispatch(fetchJobs({ search: debouncedSearchText, department, sort: sortOrder }));
+  }, [debouncedSearchText, department, sortOrder, dispatch]);
 
-  const handleSearch = () => {
-    dispatch(setFilters({ search: searchText, department, sort: sortOrder }));
-  };
-
+  // Delete job role
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this job role?")) {
       dispatch(deleteJob(id));
     }
   };
 
+  // UI Rendering
   return (
     <Box p={3}>
+      {/* Header */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h5" fontWeight="bold">
           Job Roles
@@ -62,6 +76,7 @@ export default function JobListPage() {
 
       {/* Filters */}
       <Box display="flex" gap={2} mb={2}>
+        {/* Search Field with Icon */}
         <TextField
           placeholder="Search by Job Title"
           value={searchText}
@@ -74,6 +89,8 @@ export default function JobListPage() {
             ),
           }}
         />
+
+        {/* Department Filter */}
         <Select
           value={department}
           onChange={(e) => setDepartment(e.target.value)}
@@ -85,6 +102,8 @@ export default function JobListPage() {
           <MenuItem value="Sales">Sales</MenuItem>
           <MenuItem value="HR">HR</MenuItem>
         </Select>
+
+        {/* Sort Filter */}
         <Select
           value={sortOrder}
           onChange={(e) => setSortOrder(e.target.value)}
@@ -93,12 +112,9 @@ export default function JobListPage() {
           <MenuItem value="newest">Newest First</MenuItem>
           <MenuItem value="oldest">Oldest First</MenuItem>
         </Select>
-        <Button variant="outlined" onClick={handleSearch}>
-          Apply
-        </Button>
       </Box>
 
-      {/* Table */}
+      {/* Job Table or Loader */}
       {loading ? (
         <Box display="flex" justifyContent="center" mt={4}>
           <CircularProgress />
