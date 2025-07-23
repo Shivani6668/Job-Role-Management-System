@@ -4,6 +4,7 @@ import {
   MenuItem,
   TextField,
   Typography,
+  Paper,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 
@@ -18,18 +19,16 @@ export default function JobForm({ onSubmit, initialValues = {}, isEditing = fals
     description: "",
   });
 
-useEffect(() => {
-  if (isEditing && initialValues) {
-    setFormData({
-      jobTitle: initialValues.jobTitle || "",
-      department: initialValues.department || "",
-      level: initialValues.level || "",
-      description: initialValues.description || "",
-    });
-  }
-}, [initialValues, isEditing]);
-
-
+  useEffect(() => {
+    if (isEditing && initialValues) {
+      setFormData({
+        jobTitle: initialValues.jobTitle || "",
+        department: initialValues.department || "",
+        level: initialValues.level || "",
+        description: initialValues.description || "",
+      });
+    }
+  }, [initialValues, isEditing]);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -44,69 +43,119 @@ useEffect(() => {
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} maxWidth={600} mx="auto" mt={3}>
-      <Typography variant="h6" mb={2}>
-        {isEditing ? "Edit Job Role" : "Create Job Role"}
-      </Typography>
-
-      <TextField
-        fullWidth
-        label="Job Title"
-        name="jobTitle"
-        value={formData.jobTitle}
-        onChange={handleChange}
-        required
-        margin="normal"
-      />
-
-      <TextField
-        select
-        fullWidth
-        label="Department"
-        name="department"
-        value={formData.department}
-        onChange={handleChange}
-        required
-        margin="normal"
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      minHeight="100vh"
+      sx={{
+        background: "linear-gradient(135deg, #c3cfe2 0%, #f5f7fa 100%)",
+        p: 2,
+      }}
+    >
+      <Paper
+        component="form"
+        onSubmit={handleSubmit}
+        elevation={5}
+        sx={{
+          borderRadius: "30px",
+          p: 5,
+          width: "100%",
+          maxWidth: 600,
+          backgroundColor: "#ffffff",
+          boxShadow: "0px 15px 40px rgba(0, 0, 0, 0.1)",
+        }}
       >
-        {departments.map((dept) => (
-          <MenuItem key={dept} value={dept}>
-            {dept}
-          </MenuItem>
-        ))}
-      </TextField>
+        <Typography variant="h5" fontWeight="bold" mb={2} color="primary">
+          {isEditing ? "Edit Job Role" : "Create Job Role"}
+        </Typography>
 
-      <TextField
-        select
-        fullWidth
-        label="Level"
-        name="level"
-        value={formData.level}
-        onChange={handleChange}
-        required
-        margin="normal"
-      >
-        {levels.map((lvl) => (
-          <MenuItem key={lvl} value={lvl}>
-            {lvl}
-          </MenuItem>
-        ))}
-      </TextField>
+        <Typography variant="body2" mb={3} color="text.secondary">
+          Fill in the job details below and submit the form.
+        </Typography>
 
-      <TextField
-        fullWidth
-        label="Description"
-        name="description"
-        value={formData.description}
-        onChange={handleChange}
-        margin="normal"
-        multiline
-        rows={4}
-      />
+        <TextField
+          fullWidth
+          label="Job Title"
+          name="jobTitle"
+          value={formData.jobTitle}
+          onChange={handleChange}
+          required
+          margin="normal"
+          variant="outlined"
+          sx={{ borderRadius: "12px", backgroundColor: "#f8f9ff" }}
+        />
 
-      <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
-        {isEditing ? "Update Job Role" : "Create Job Role"}
-      </Button>
+        <TextField
+          select
+          fullWidth
+          label="Department"
+          name="department"
+          value={formData.department}
+          onChange={handleChange}
+          required
+          margin="normal"
+          variant="outlined"
+          sx={{ borderRadius: "12px", backgroundColor: "#f8f9ff" }}
+        >
+          {departments.map((dept) => (
+            <MenuItem key={dept} value={dept}>
+              {dept}
+            </MenuItem>
+          ))}
+        </TextField>
+
+        <TextField
+          select
+          fullWidth
+          label="Level"
+          name="level"
+          value={formData.level}
+          onChange={handleChange}
+          required
+          margin="normal"
+          variant="outlined"
+          sx={{ borderRadius: "12px", backgroundColor: "#f8f9ff" }}
+        >
+          {levels.map((lvl) => (
+            <MenuItem key={lvl} value={lvl}>
+              {lvl}
+            </MenuItem>
+          ))}
+        </TextField>
+
+        <TextField
+          fullWidth
+          label="Description"
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          margin="normal"
+          multiline
+          rows={4}
+          variant="outlined"
+          sx={{ borderRadius: "12px", backgroundColor: "#f8f9ff" }}
+        />
+
+        <Button
+          type="submit"
+          fullWidth
+          sx={{
+            mt: 3,
+            py: 1.5,
+            borderRadius: "30px",
+            fontWeight: "bold",
+            background: "linear-gradient(to right, #6a11cb, #2575fc)",
+            color: "#fff",
+            textTransform: "none",
+            '&:hover': {
+              background: "linear-gradient(to right, #5b0eb8, #1e63d6)"
+            }
+          }}
+        >
+          {isEditing ? "Update Job Role" : "Create Job Role"}
+        </Button>
+      </Paper>
     </Box>
   );
 }
