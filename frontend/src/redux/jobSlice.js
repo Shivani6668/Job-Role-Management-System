@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API = "http://localhost:5000/api/jobroles";
+const API = "https://job-role-management-system-rkoo.onrender.com/api/jobroles";
 
 export const fetchJobs = createAsyncThunk("job/fetchJobs", async (params) => {
   const res = await axios.get(API, { params });

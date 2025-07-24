@@ -13,7 +13,7 @@ export default function EditJobPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/jobroles`)
+    axios.get(`https://job-role-management-system-rkoo.onrender.com/api/jobroles`)
       .then((res) => {
         const found = res.data.find(j => j._id === id);
         if (found) setJob(found);
