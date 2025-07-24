@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import JobTable from "../components/JobTable";
 import JobFilters from "../components/JobFilters";
 import useDebounce from "../hooks/useDebounce";
+import { ThemeProvider } from "../ThemeContext";
 
 export default function JobListPage() {
   const dispatch = useDispatch();
@@ -36,6 +37,7 @@ export default function JobListPage() {
         <Button variant="contained" onClick={() => navigate("/add")}>+ Add Job Role</Button>
       </Box>
 
+<ThemeProvider>
       <JobFilters
         searchText={searchText}
         onSearchTextChange={setSearchText}
@@ -44,7 +46,7 @@ export default function JobListPage() {
         sortOrder={sortOrder}
         onSortOrderChange={setSortOrder}
       />
-
+</ThemeProvider>
       {loading ? (
         <Box display="flex" justifyContent="center" mt={4}><CircularProgress /></Box>
       ) : (
